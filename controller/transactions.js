@@ -1,83 +1,65 @@
-const Transaction = require('../models/Transaction');
+const getUser = require('../utils/getUser');
 
-
-//  Get all transactions
-//  GET /api/v1/transactions
-
+// Get all transactions
 exports.getTransactions = async (req, res, next) => {
-    try {
-       const transactions = await Transaction.find();
-       
-       
-       return res.status(200).json( {
-        success: true,
-        count: transactions.length,
-        data: transactions
-       })
-    } catch (err) {
-        return res.status(500).json( {
-            success: false,
-            error: 'Server Error'
-        });
-    }
-}
+  try {
+    const ip = req.ip; //  req.ip gives the IP address of the user
+    const { user } = await getUser(ip);
 
-// add transaction
-// POST /api/v1/transactions
+    return res.status(200).json({
+      success: true,
+      count: user.transactions.length,
+      data: user.transactions,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error',
+    });
+  }
+};
 
+// Add transaction
 exports.addTransaction = async (req, res, next) => {
-    try {
-        const { text, amount } = req.body;
+  try {
+    const ip = req.ip; 
+    const { user, addTransaction } = await getUser(ip);
 
-        const transaction = await Transaction.create(req.body); 
-    
-        return res.status(201).json( {
-            success: true,
-            data: transaction
-        });
-    } catch (err) {
-        if(err.name === 'Validation Error') {
-            const messages = Object.values(err.errors).map(val => val.message);
+    const { text, amount } = req.body;
+    const transaction = { text, amount, createdAt: new Date() };
 
-            return res.status(400).json({
-                success: false,
-                error: messages
-            })
-        } else {
-            return res.status(500).json( {
-                success: false,
-                error: 'Server Error'
-            });
-        }
-    }
+    await addTransaction(transaction);
 
-}
+    return res.status(201).json({
+      success: true,
+      data: transaction,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error',
+    });
+  }
+};
 
-// delete transaction
-// DELETE /api/v1/transaction/:id
-
+// Delete transaction
 exports.deleteTransaction = async (req, res) => {
-    try {
-        const transaction = await Transaction.findById(req.params.id);
-        if( !transaction) {
-            return res.status(404).json({
-                success: false,
-                error: 'No Transaction Found'
-            });
-        }
+  try {
+    const ip = req.ip; 
+    const { user, deleteTransaction } = await getUser(ip);
 
-        await Transaction.findByIdAndDelete(req.params.id);
+    const transactionId = req.params.id;
 
+    await deleteTransaction(transactionId);
 
-        return res.status(200).json( {
-            success: true,
-            data: {}
-        });
-
-    } catch (err) {
-        return res.status(500).json( {
-                success: false,
-                error: 'Server Error'
-            }); 
-    }
-}
+    return res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error',
+    });
+  }
+};

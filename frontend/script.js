@@ -10,7 +10,7 @@ let transactions = [];
 
 async function getTransactions() {
   try {
-    const response = await fetch("http://localhost:5000/api/v1/transactions/");
+    const response = await fetch("http://localhost:5001/api/v1/transactions/");
     const responseData = await response.json();
     transactions = responseData.data;
     init();
@@ -29,17 +29,19 @@ function addTransaction(e) {
       text: text.value,
       amount: +amount.value
     };
+    updateBackendTransactions(transaction);
 
-    transactions.push(transaction);
+    //transactions.push(transaction);
 
-    addTransactionDOM(transaction);
+    //addTransactionDOM(transaction);
 
     updateValues();
+    getTransactions();
 
     text.value = '';
     amount.value = '';
 
-    updateBackendTransactions();
+    //updateBackendTransactions();
   }
 }
 
@@ -79,7 +81,7 @@ function updateValues() {
 
 async function removeTransaction(id) {
   try {
-    await fetch(`http://localhost:5000/api/v1/transactions/${id}`, {
+    await fetch(`http://localhost:5001/api/v1/transactions/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -93,15 +95,18 @@ async function removeTransaction(id) {
   }
 }
 
-async function updateBackendTransactions() {
+async function updateBackendTransactions(transaction) {
   try {
-    await fetch("http://localhost:5000/api/v1/transactions/", {
+    await fetch("http://localhost:5001/api/v1/transactions/", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(transactions)
+      body: JSON.stringify(transaction)
     });
+
+    transactions.push(transaction);
+    
   } catch (error) {
     console.log('Error:', error);
   }
