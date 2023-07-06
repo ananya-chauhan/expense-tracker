@@ -26,7 +26,7 @@ exports.addTransaction = async (req, res, next) => {
     const { user, addTransaction } = await getUser(ip);
 
     const { text, amount } = req.body;
-    const transaction = { text, amount, createdAt: new Date() };
+    const transaction = { description:text, amount, createdAt: new Date() };
 
     await addTransaction(transaction);
 

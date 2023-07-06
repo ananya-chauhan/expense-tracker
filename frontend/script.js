@@ -19,7 +19,7 @@ async function getTransactions() {
   }
 }
 
-function addTransaction(e) {
+async function addTransaction(e) {
   e.preventDefault();
 
   if (text.value.trim() === '' || amount.value.trim() === '') {
@@ -36,7 +36,7 @@ function addTransaction(e) {
     //addTransactionDOM(transaction);
 
     updateValues();
-    getTransactions();
+    await getTransactions();
 
     text.value = '';
     amount.value = '';
@@ -45,13 +45,13 @@ function addTransaction(e) {
   }
 }
 
-function addTransactionDOM(transaction) {
+async function addTransactionDOM(transaction) {
   const sign = transaction.amount < 0 ? '-' : '+';
   const item = document.createElement('li');
 
   item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
   item.innerHTML = `
-    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
+    ${transaction.description} <span>${sign}${Math.abs(transaction.amount)}</span>
     <button class="delete-btn" onclick="removeTransaction('${transaction._id}')">x</button>
   `;
 
@@ -106,7 +106,7 @@ async function updateBackendTransactions(transaction) {
     });
 
     transactions.push(transaction);
-    
+
   } catch (error) {
     console.log('Error:', error);
   }
@@ -118,7 +118,7 @@ function init() {
   updateValues();
 }
 
-getTransactions();
+   getTransactions();
 
 form.addEventListener('submit', addTransaction);
 
