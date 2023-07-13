@@ -30,6 +30,8 @@ exports.addTransaction = async (req, res, next) => {
 
     await addTransaction(transaction);
 
+    io.emit('TransactionAdded', transaction);
+
     return res.status(201).json({
       success: true,
       data: transaction,
@@ -51,6 +53,8 @@ exports.deleteTransaction = async (req, res) => {
     const transactionId = req.params.id;
 
     await deleteTransaction(transactionId);
+
+    io.emit('transactionDeleted', transactionId);
 
     return res.status(200).json({
       success: true,

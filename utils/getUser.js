@@ -3,6 +3,7 @@ const User = require('../models/User');
 async function getUser(ip) {
   try {
     let user = await User.findOne({ ip });
+    console.log(user);
 
     if (!user) {
       user = new User({

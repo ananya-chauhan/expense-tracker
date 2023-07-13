@@ -125,6 +125,12 @@ input[type='text'], input[type='number'] {
     margin: 10px 0;
 
 }
+.list li.highlight {
+    background-color: #f8f8f8;
+}
+#text:focus, #amount:focus {
+    caret-color: #026f4ef1; /* Change the color of the blinking cursor */
+  }
 
 .list li.plus {
     border-right: 5px solid  #2ecc71;
