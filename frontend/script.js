@@ -163,11 +163,7 @@ list.addEventListener('keydown', function(event) {
       // Redirect focus to the text field from the last transaction
       text.focus();
     }
-   } //else if(event.key === 'Delete') {
-  //   event.preventDefault();
-  //   const transactionId = event.target.dataset.transactionId;
-  //   removeTransaction(transactionId);
-  // }
+   } 
 });
 
 // event listener to amount field 
